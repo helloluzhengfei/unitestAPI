@@ -73,7 +73,11 @@ class testFileInfo(unittest.TestCase):
             self.get_file_info2(apk_id, 1)
             self.get_file_info3(apk_id, 1)
             self.get_file_info4(apk_id, 1)
-            
+        
+        wrong_id='0000-3b85e060-14ab-4f2a-a5f3-16cec8ebf9a8'        
+        self.get_file_info5(wrong_id, 1) 
+        empty_id=''
+        self.get_file_info6(empty_id, 1)    
            
         print 'icon_id的file测试。。。。。。。'     
         for icon_id in self.list_icon_id:
@@ -84,6 +88,12 @@ class testFileInfo(unittest.TestCase):
             self.get_file_info2(icon_id, 2)
             self.get_file_info3(icon_id, 2)
             self.get_file_info4(icon_id, 2)
+        
+        wrong_id='0000-3b85e060-14ab-4f2a-a5f3-16cec8ebf9a8'        
+        self.get_file_info5(wrong_id, 2) 
+        empty_id=''
+        self.get_file_info6(empty_id, 2)  
+        
             
         print 'screen_id的file测试。。。。。。。'    
         for screen_id in self.list_screen_id:
@@ -94,7 +104,12 @@ class testFileInfo(unittest.TestCase):
                 self.get_file_info1(screen_id1, 3)
                 self.get_file_info2(screen_id1, 3)
                 self.get_file_info3(screen_id1, 3)
-                self.get_file_info4(screen_id1, 3)    
+                self.get_file_info4(screen_id1, 3) 
+        
+        wrong_id='0000-3b85e060-14ab-4f2a-a5f3-16cec8ebf9a8'        
+        self.get_file_info5(wrong_id, 3) 
+        empty_id=''
+        self.get_file_info6(empty_id, 3)            
 #主要作用是将去除parentid的id放在数组中供后期的调用
              
 #第二次测试        10.110.1.55:8081/1.0/cat/app/app_id
@@ -238,5 +253,60 @@ class testFileInfo(unittest.TestCase):
   #      self.assertEqual(request_id, 405) 
         print request_id        
         
+    #错误的id        
+    def get_file_info5(self, wrong_id, file_type):
+        self.list_tmp_id=[] 
+        url = self.base_url + self.cat_app_uri+wrong_id
+        print url
+        #print self.cat_list
+        response = requests.get(url)
+        self.assertEqual(response.status_code, 200)
+        print 'app的状态码是200'
+
+        jResp = response.json()
         
+        limit = jResp["limit"]
+        self.assertEqual(limit, 0) 
+        
+       
+        total = jResp["total"]
+        self.assertEqual(total, 0) 
+        
+        
+        result_code = jResp["result_code"]
+        
+        self.assertEqual(result_code,404) 
+        
+        
+        data = jResp["data"]
+        self.assertEqual(data, []) 
+    #空的id        
+    def get_file_info6(self, empty_id, file_type):
+        self.list_tmp_id=[] 
+        url = self.base_url + self.cat_app_uri+empty_id
+        print url
+        #print self.cat_list
+        response = requests.get(url)
+        self.assertEqual(response.status_code, 200)
+        print 'app的状态码是200'
+
+        jResp = response.json()
+        
+        result_code = jResp["result_code"]
+        self.assertEqual(result_code, 404) 
+        print 'result_code值为200'
+       
+        code = jResp["code"]
+        self.assertEqual(code, 'not_found') 
+        print code
+        
+        message = jResp["message"]
+        message1='Unresolvable URL: '+'http://10.110.1.55/1.0/cat/app/'
+        print message1
+        self.assertEqual(message,message1) 
+        print message
+        
+        request_id = jResp["request_id"]
+  #      self.assertEqual(request_id, 405) 
+        print request_id           
         

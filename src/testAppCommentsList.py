@@ -77,6 +77,11 @@ class testAppCommentsList(unittest.TestCase):
             self.get_comment_list4(app_id)
             
             
+        wrong_id='0000-3b85e060-14ab-4f2a-a5f3-16cec8ebf9a8'
+        self.get_comment_list5(wrong_id)
+        empty_id=''
+        self.get_comment_list6(empty_id)     
+           
 
     def get_app_info(self, category_id):
         
@@ -217,4 +222,69 @@ class testAppCommentsList(unittest.TestCase):
         request_id = jResp["request_id"]
   #      self.assertEqual(request_id, 405) 
         print request_id 
-            
+     
+     
+    def get_comment_list5(self, wrong_id):
+         
+        url = self.base_url + self.get_commentlist_uri + wrong_id #http://10.110.1.55:8081/1.0/file/
+        print '陆正飞  本次测试的URL是'
+        print url
+        response = requests.get(url)
+        self.assertEqual(response.status_code, 200)
+        
+        print 'app的状态码是200'
+
+        jResp = response.json()
+        
+        result_code = jResp["result_code"]
+        self.assertEqual(result_code, 200) 
+        
+       
+        limit = jResp["limit"]
+        self.assertEqual(limit,0) 
+        
+        
+        total = jResp["total"]
+        
+        self.assertEqual(total,0) 
+        
+        
+        result_code = jResp["result_code"]
+        self.assertEqual(result_code, 200) 
+        
+        data = jResp["data"]
+        self.assertEqual(data, [])
+        
+        
+        
+    #空的id        
+    def get_comment_list6(self,empty_id):
+      
+        url = self.base_url + self.get_commentlist_uri + empty_id #http://10.110.1.55:8081/1.0/file/
+        print '陆正飞  本次测试的URL是'
+        print url
+        response = requests.get(url)
+        self.assertEqual(response.status_code, 200)
+        
+        
+        print 'app的状态码是200'
+
+        jResp = response.json()
+        
+        result_code = jResp["result_code"]
+        self.assertEqual(result_code, 404) 
+        print 'result_code值为200'
+       
+        code = jResp["code"]
+        self.assertEqual(code, 'not_found') 
+        print code
+        
+        message = jResp["message"]
+        message1='Unresolvable URL: http://10.110.1.55/1.0/app/c/list/'
+        print message1
+        self.assertEqual(message,message1) 
+        print message
+        
+        request_id = jResp["request_id"]
+  #      self.assertEqual(request_id, 405) 
+        print request_id              

@@ -64,7 +64,11 @@ class testApp(unittest.TestCase):
             self.get_app_info2(category_id)
             self.get_app_info3(category_id)
             self.get_app_info4(category_id)
-            self.get_app_info5(category_id)
+            
+        wrong_id='0000-3b85e060-14ab-4f2a-a5f3-16cec8ebf9a8'
+        self.get_app_info5(wrong_id)
+        empty_id=''
+        self.get_app_info6(empty_id)    
             
             
     def get_app_info1(self, category_id):
@@ -160,7 +164,7 @@ class testApp(unittest.TestCase):
         print request_id
     
     def get_app_info4(self, category_id):
-        self.list_tmp_id=[] 
+
         url = self.base_url + self.cat_app_uri+category_id
         print url
         #print self.cat_list
@@ -187,6 +191,62 @@ class testApp(unittest.TestCase):
         request_id = jResp["request_id"]
   #      self.assertEqual(request_id, 405) 
         print request_id   
+
+
+#错误的id        
+    def get_app_info5(self, wrong_id):
+        self.list_tmp_id=[] 
+        url = self.base_url + self.cat_app_uri+wrong_id
+        print url
+        #print self.cat_list
+        response = requests.get(url)
+        self.assertEqual(response.status_code, 200)
+        print 'app的状态码是200'
+
+        jResp = response.json()
+        
+        limit = jResp["limit"]
+        self.assertEqual(limit, 0) 
+        
+       
+        total = jResp["total"]
+        self.assertEqual(total, 0) 
         
         
+        result_code = jResp["result_code"]
+        
+        self.assertEqual(result_code,404) 
+        
+        
+        data = jResp["data"]
+        self.assertEqual(data, []) 
+    #空的id        
+    def get_app_info6(self,empty_id):
+        self.list_tmp_id=[] 
+        url = self.base_url + self.cat_app_uri+empty_id
+        print url
+        #print self.cat_list
+        response = requests.get(url)
+        self.assertEqual(response.status_code, 200)
+        print 'app的状态码是200'
+
+        jResp = response.json()
+        
+        result_code = jResp["result_code"]
+        self.assertEqual(result_code, 404) 
+        print 'result_code值为200'
+       
+        code = jResp["code"]
+        self.assertEqual(code, 'not_found') 
+        print code
+        
+        message = jResp["message"]
+        message1='Unresolvable URL: '+'http://10.110.1.55/1.0/cat/app/'
+        print message1
+        self.assertEqual(message,message1) 
+        print message
+        
+        request_id = jResp["request_id"]
+  #      self.assertEqual(request_id, 405) 
+        print request_id       
   

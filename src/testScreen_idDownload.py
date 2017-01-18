@@ -30,6 +30,13 @@ class testScreen_idDownload(unittest.TestCase):
         
 #第一次测试   10.110.1.55:8081/1.0/cat/list/cat/list
     def test1_cat_list_api(self):
+        
+        
+        wrong_id='0000-2f5f58da-73d0-4934-8fa9-8617cc091c09'
+        self.download_file5(wrong_id)
+        empty_id=''
+        self.download_file6(empty_id)
+        
         url = self.base_url + self.cat_list_uri        
         response = requests.get(url)                
         jResp = response.json()  
@@ -264,4 +271,60 @@ class testScreen_idDownload(unittest.TestCase):
   #      self.assertEqual(request_id, 405) 
         print request_id 
  
+ 
+    def download_file5(self, wrong_id):
+       
+        url = self.base_url + self.dlwd_icon_uri + wrong_id               
+        response = requests.get(url)
+        self.assertEqual(response.status_code, 500)
+                
+        jResp = response.json()
+                
+        result_code = jResp["result_code"]
+        self.assertEqual(result_code, 500) 
+        
+       
+        code = jResp["code"]
+        self.assertEqual(code, "internal_server_error") 
+        
+        
+        result_code = jResp["result_code"]
+        
+        self.assertEqual(result_code,500) 
+        
+        
+        message = jResp["message"]
+        self.assertEqual(message, "unknown error type") 
+        
+        request_id = jResp["request_id"]
+  #      self.assertEqual(request_id, 405) 
+        print request_id 
+        
+    def download_file6(self, empty_id):
+
+        url = self.base_url + self.dlwd_icon_uri + empty_id
+        response = requests.get(url)
+        self.assertEqual(response.status_code, 200)
+        print 'app的状态码是200'
+
+        jResp = response.json()
+        
+        result_code = jResp["result_code"]
+        self.assertEqual(result_code, 404) 
+        print 'result_code值为200'
+       
+        code = jResp["code"]
+        self.assertEqual(code, 'not_found') 
+        print code
+        
+        message = jResp["message"]
+        message1='Unresolvable URL: http://10.110.1.55/1.0/app/icon/cont/'
+        print message1
+        self.assertEqual(message,message1) 
+        print message
+        
+        request_id = jResp["request_id"]
+  #      self.assertEqual(request_id, 405) 
+        print request_id           
+          
   
